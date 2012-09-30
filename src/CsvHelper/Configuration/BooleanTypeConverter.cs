@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper.Configuration
 {

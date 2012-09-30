@@ -22,7 +22,9 @@ namespace CsvHelper.Configuration
 		private CsvPropertyMapCollection properties = new CsvPropertyMapCollection();
 		private List<CsvPropertyReferenceMap> references = new List<CsvPropertyReferenceMap>();
 #endif
+#if !NET_RT_45
 		private BindingFlags propertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
+#endif
 		private bool hasHeaderRecord = true;
 		private bool isStrictMode = true;
 		private char delimiter = ',';
@@ -50,6 +52,7 @@ namespace CsvHelper.Configuration
 		}
 #endif
 
+#if !NET_RT_45
 		/// <summary>
 		/// Gets or sets the property binding flags.
 		/// This determines what properties on the custom
@@ -60,6 +63,7 @@ namespace CsvHelper.Configuration
 			get { return propertyBindingFlags; }
 			set { propertyBindingFlags = value; }
 		}
+#endif
 
 		/// <summary>
 		/// Gets or sets a value indicating if the
@@ -318,7 +322,12 @@ namespace CsvHelper.Configuration
 		/// <param name="type">The type of custom class that contains the attributes.</param>
 		public virtual void AttributeMapping( Type type )
 		{
+#if NET_RT_45
+			var props = type.GetRuntimeProperties();
+#else
 			var props = type.GetProperties( PropertyBindingFlags );
+#endif
+
 			foreach( var property in props )
 			{
 				var csvFieldAttribute = ReflectionHelper.GetAttribute<CsvFieldAttribute>( property, true );

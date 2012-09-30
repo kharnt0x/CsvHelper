@@ -14,6 +14,9 @@ using System.Linq.Expressions;
 #endif
 using System.Text;
 using CsvHelper.Configuration;
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 #if NET_2_0
 using CsvHelper.MissingFrom20;
 #endif

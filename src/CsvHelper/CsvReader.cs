@@ -15,6 +15,9 @@ using System.Linq.Expressions;
 #if NET_2_0
 using CsvHelper.MissingFrom20;
 #endif
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper
 {
@@ -29,7 +32,6 @@ namespace CsvHelper
 		private string[] headerRecord;
 		private ICsvParser parser;
 		private int currentIndex = -1;
-		private string currentName;
 		private readonly Dictionary<string, List<int>> namedIndexes = new Dictionary<string, List<int>>();
 #if !NET_2_0
 		private readonly Dictionary<Type, Delegate> recordFuncs = new Dictionary<Type, Delegate>();

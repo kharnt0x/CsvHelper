@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper
 {
@@ -25,8 +28,8 @@ namespace CsvHelper
 		public static T GetAttribute<T>( PropertyInfo property, bool inherit ) where T : Attribute
 		{
 			T attribute = null;
-			var attributes = property.GetCustomAttributes( typeof( T ), inherit );
-			if( attributes.Length > 0 )
+			var attributes = property.GetCustomAttributes( typeof( T ), inherit ).ToList();
+			if( attributes.Count > 0 )
 			{
 				attribute = attributes[0] as T;
 			}

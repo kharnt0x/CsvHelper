@@ -29,6 +29,7 @@ namespace CsvHelper.Configuration
 		/// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
 		public CsvConfigurationException( string message, Exception innerException ) : base( message, innerException ) {}
 
+#if !NET_RT_45
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CsvConfigurationException"/> class
 		/// with serialized data.
@@ -36,5 +37,6 @@ namespace CsvHelper.Configuration
 		/// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
 		/// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
 		public CsvConfigurationException( SerializationInfo info, StreamingContext context ) : base( info, context ) { }
+#endif
 }
 }

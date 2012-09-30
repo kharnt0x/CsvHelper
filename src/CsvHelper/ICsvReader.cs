@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using CsvHelper.Configuration;
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper
 {

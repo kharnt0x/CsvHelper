@@ -8,6 +8,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+#if NET_RT_45
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper.Configuration
 {
