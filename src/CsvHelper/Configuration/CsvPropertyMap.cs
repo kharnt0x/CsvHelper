@@ -4,13 +4,10 @@
 // http://csvhelper.com
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-#if NET_RT_45
-using CsvHelper.MissingFromRt45;
-#endif
+using CsvHelper.TypeConversion;
 
 namespace CsvHelper.Configuration
 {
@@ -23,7 +20,7 @@ namespace CsvHelper.Configuration
 		private readonly PropertyInfo property;
 		private readonly List<string> names = new List<string>();
 		private int index = -1;
-		private TypeConverter typeConverter;
+		private ITypeConverter typeConverter;
 		private bool ignore;
 		private object defaultValue;
 		private bool isDefaultValueSet;
@@ -51,7 +48,7 @@ namespace CsvHelper.Configuration
 		/// <summary>
 		/// Gets the type converter value.
 		/// </summary>
-		public virtual TypeConverter TypeConverterValue { get { return typeConverter; } }
+		public virtual ITypeConverter TypeConverterValue { get { return typeConverter; } }
 
 		/// <summary>
 		/// Gets a value indicating whether the field should be ignored.
@@ -80,14 +77,7 @@ namespace CsvHelper.Configuration
 
 			// Set some defaults.
 			names.Add( property.Name );
-			if( property.PropertyType == typeof( bool ) || property.PropertyType == typeof( bool? ) )
-			{
-				typeConverter = new BooleanTypeConverter();
-			}
-			else
-			{
-				typeConverter = TypeDescriptor.GetConverter( property.PropertyType );
-			}
+			typeConverter = TypeConverterFactory.CreateTypeConverter( property.PropertyType );
 		}
 
 		/// <summary>
@@ -160,7 +150,7 @@ namespace CsvHelper.Configuration
 		/// when converting the property to and from a CSV field.
 		/// </summary>
 		/// <param name="typeConverter">The TypeConverter to use.</param>
-		public virtual CsvPropertyMap TypeConverter( TypeConverter typeConverter )
+		public virtual CsvPropertyMap TypeConverter( ITypeConverter typeConverter )
 		{
 			this.typeConverter = typeConverter;
 			return this;
@@ -172,7 +162,7 @@ namespace CsvHelper.Configuration
 		/// </summary>
 		/// <typeparam name="T">The <see cref="Type"/> of the 
 		/// <see cref="TypeConverter"/> to use.</typeparam>
-		public virtual CsvPropertyMap TypeConverter<T>() where T : TypeConverter
+		public virtual CsvPropertyMap TypeConverter<T>() where T : ITypeConverter
 		{
 			TypeConverter( Activator.CreateInstance<T>() );
 			return this;

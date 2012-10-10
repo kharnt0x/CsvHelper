@@ -7,9 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Web.Script.Serialization;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace CsvHelper.Example
 {
@@ -367,21 +369,27 @@ namespace CsvHelper.Example
 			}
 		}
 
-		public class CustomTypeTypeConverter : TypeConverter
+		public class CustomTypeTypeConverter : ITypeConverter
 		{
-			public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+			public string ConvertToString( object value )
 			{
-				return sourceType == typeof( string );
+				return ConvertToString( CultureInfo.CurrentCulture, value );
 			}
 
-			public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+			public string ConvertToString( CultureInfo culture, object value )
 			{
-				return destinationType == typeof( string );
+				var obj = (CustomType)value;
+				return string.Format( "{0}|{1}|{2}", obj.First, obj.Second, obj.Third );
 			}
 
-			public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value )
+			public object ConvertFromString( string text )
 			{
-				var values = ( (string)value ).Split( '|' );
+				return ConvertFromString( CultureInfo.CurrentCulture, text );
+			}
+
+			public object ConvertFromString( CultureInfo culture, string text )
+			{
+				var values = ( (string)text ).Split( '|' );
 
 				var obj = new CustomType
 				{
@@ -390,12 +398,6 @@ namespace CsvHelper.Example
 					Third = int.Parse( values[2] ),
 				};
 				return obj;
-			}
-
-			public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType )
-			{
-				var obj = (CustomType)value;
-				return string.Format( "{0}|{1}|{2}", obj.First, obj.Second, obj.Third );
 			}
 		}
 
@@ -415,7 +417,7 @@ namespace CsvHelper.Example
 
 		public class CustomObjectWithAttributes
 		{
-			[TypeConverter( typeof( CustomTypeTypeConverter ) )]
+			[System.ComponentModel.TypeConverter( typeof( CustomTypeTypeConverter ) )]
 			[CsvField( Name = "Custom Type Column", Index = 3 )]
 			public CustomType CustomTypeColumn { get; set; }
 

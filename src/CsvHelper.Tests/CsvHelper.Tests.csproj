@@ -59,7 +59,6 @@
     <Compile Include="CsvReaderSubClassingTests.cs" />
     <Compile Include="CsvWriterMappingTests.cs" />
     <Compile Include="CsvWriterSubClassingTests.cs" />
-    <Compile Include="CustomTypeConverterTests.cs" />
     <Compile Include="CsvClassMappingTests.cs" />
     <Compile Include="CsvConfigurationTests.cs" />
     <Compile Include="CsvFieldAttributeMappingTests.cs" />
@@ -74,6 +73,11 @@
     <Compile Include="StringExtensionTests.cs" />
     <Compile Include="ReferenceMappingAttributeTests.cs" />
     <Compile Include="ReferenceMappingClassMapTests.cs" />
+    <Compile Include="TypeConversion\BooleanConverterTests.cs" />
+    <Compile Include="TypeConversion\ByteConverterTests.cs" />
+    <Compile Include="TypeConversion\CharConverterTests.cs" />
+    <Compile Include="TypeConversion\DateTimeConverterTests.cs" />
+    <Compile Include="TypeConversion\TypeConverterFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CsvHelper.snk" />

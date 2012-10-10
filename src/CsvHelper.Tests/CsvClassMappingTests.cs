@@ -5,8 +5,8 @@
 // http://csvhelper.com
 #endregion
 using System;
-using System.ComponentModel;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using Xunit;
 
 namespace CsvHelper.Tests

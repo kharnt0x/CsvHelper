@@ -22,8 +22,10 @@ namespace CsvHelper.Configuration
 		private CsvPropertyMapCollection properties = new CsvPropertyMapCollection();
 		private List<CsvPropertyReferenceMap> references = new List<CsvPropertyReferenceMap>();
 #endif
-#if !NET_RT_45
+#if !WINRT_4_5
 		private BindingFlags propertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
+#endif
+#if WINRT_4_5
 #endif
 		private bool hasHeaderRecord = true;
 		private bool isStrictMode = true;
@@ -32,7 +34,7 @@ namespace CsvHelper.Configuration
 		private char comment = '#';
 		private int bufferSize = 2048;
 		private bool isCaseSensitive = true;
-		private Encoding encoding = Encoding.Default;
+		private Encoding encoding = Encoding.UTF8;
 
 #if !NET_2_0
 		/// <summary>
@@ -52,7 +54,7 @@ namespace CsvHelper.Configuration
 		}
 #endif
 
-#if !NET_RT_45
+#if !WINRT_4_5
 		/// <summary>
 		/// Gets or sets the property binding flags.
 		/// This determines what properties on the custom
@@ -322,7 +324,7 @@ namespace CsvHelper.Configuration
 		/// <param name="type">The type of custom class that contains the attributes.</param>
 		public virtual void AttributeMapping( Type type )
 		{
-#if NET_RT_45
+#if WINRT_4_5
 			var props = type.GetRuntimeProperties();
 #else
 			var props = type.GetProperties( PropertyBindingFlags );
@@ -370,7 +372,11 @@ namespace CsvHelper.Configuration
 					// This is a reference mapping.
 					var refMap = ReferenceMap( property );
 					references.Add( refMap );
+#if WINRT_4_5
+					var refProps = property.PropertyType.GetRuntimeProperties();
+#else
 					var refProps = property.PropertyType.GetProperties( PropertyBindingFlags );
+#endif
 					foreach( var refProp in refProps )
 					{
 						var refCsvFieldAttributes = ReflectionHelper.GetAttributes<CsvFieldAttribute>( refProp, true );

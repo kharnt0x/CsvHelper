@@ -6,11 +6,12 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using Moq;
 using Xunit;
 
@@ -545,62 +546,6 @@ namespace CsvHelper.Tests
 		}
 
 		[Fact]
-		public void TryGetFieldInvalidConverterIndexTest()
-		{
-			var isHeaderRecord = true;
-			var data1 = new[] { "One", "Two" };
-			var data2 = new[] { "1", "2" };
-			var mockFactory = new MockRepository( MockBehavior.Default );
-			var parserMock = mockFactory.Create<ICsvParser>();
-			parserMock.Setup( m => m.Configuration ).Returns( new CsvConfiguration() );
-			parserMock.Setup( m => m.Read() ).Returns( () =>
-			{
-				if( isHeaderRecord )
-				{
-					isHeaderRecord = false;
-					return data1;
-				}
-				return data2;
-			} );
-
-			var reader = new CsvReader( parserMock.Object );
-			reader.Read();
-
-			int field;
-			var got = reader.TryGetField( 0, new GuidConverter(), out field );
-			Assert.False( got );
-			Assert.Equal( default( int ), field );
-		}
-
-		[Fact]
-		public void TryGetFieldInvalidConverterNameTest()
-		{
-			var isHeaderRecord = true;
-			var data1 = new[] { "One", "Two" };
-			var data2 = new[] { "1", "2" };
-			var mockFactory = new MockRepository( MockBehavior.Default );
-			var parserMock = mockFactory.Create<ICsvParser>();
-			parserMock.Setup( m => m.Configuration ).Returns( new CsvConfiguration() );
-			parserMock.Setup( m => m.Read() ).Returns( () =>
-			{
-				if( isHeaderRecord )
-				{
-					isHeaderRecord = false;
-					return data1;
-				}
-				return data2;
-			} );
-
-			var reader = new CsvReader( parserMock.Object );
-			reader.Read();
-
-			int field;
-			var got = reader.TryGetField( "One", new GuidConverter(), out field );
-			Assert.False( got );
-			Assert.Equal( default( int ), field );
-		}
-
-		[Fact]
 		public void TryGetFieldTest()
 		{
 			var isHeaderRecord = true;
@@ -949,16 +894,26 @@ namespace CsvHelper.Tests
 			public string Column3 { get; set; }
 		}
 
-		private class TestTypeConverter : TypeConverter
+		private class TestTypeConverter : ITypeConverter
 		{
-			public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value )
+			public string ConvertToString( object value )
+			{
+				return ConvertToString( CultureInfo.CurrentCulture, value );
+			}
+
+			public string ConvertToString( CultureInfo culture, object value )
 			{
 				return "test";
 			}
 
-			public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+			public object ConvertFromString( string text )
 			{
-				return sourceType == typeof( string );
+				throw new NotImplementedException();
+			}
+
+			public object ConvertFromString( CultureInfo culture, string text )
+			{
+				throw new NotImplementedException();
 			}
 		}
 	}
