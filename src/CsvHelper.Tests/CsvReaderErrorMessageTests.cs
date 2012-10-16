@@ -2,13 +2,18 @@
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
-using Xunit;
+#if WINRT_4_5
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace CsvHelper.Tests
 {
+	[TestClass]
 	public class CsvReaderErrorMessageTests
 	{
-		[Fact]
+		[TestMethod]
 		public void FirstColumnEmptyFirstRowErrorWithNoHeaderTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -30,16 +35,16 @@ namespace CsvHelper.Tests
 				}
 				catch( CsvReaderException ex )
 				{
-					Assert.True( ex.ToString().Contains( "Row: '1'" ) );
-					Assert.True( ex.ToString().Contains( "Field Index: '0'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Row: '1'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Index: '0'" ) );
 					// There is no header so a field name should not be in the message.
-					Assert.True( !ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
-					Assert.True( ex.ToString().Contains( "Field Value: ''" ) );
+					Assert.IsTrue( !ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Value: ''" ) );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void FirstColumnEmptySecondRowErrorWithHeader()
 		{
 			using( var stream = new MemoryStream() )
@@ -61,15 +66,15 @@ namespace CsvHelper.Tests
 				}
 				catch( CsvReaderException ex )
 				{
-					Assert.True( ex.ToString().Contains( "Row: '3'" ) );
-					Assert.True( ex.ToString().Contains( "Field Index: '0'" ) );
-					Assert.True( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
-					Assert.True( ex.ToString().Contains( "Field Value: ''" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Row: '3'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Index: '0'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Value: ''" ) );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void FirstColumnEmptyErrorWithHeaderAndCommentRowTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -93,15 +98,15 @@ namespace CsvHelper.Tests
 				}
 				catch( CsvReaderException ex )
 				{
-					Assert.True( ex.ToString().Contains( "Row: '4'" ) );
-					Assert.True( ex.ToString().Contains( "Field Index: '0'" ) );
-					Assert.True( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
-					Assert.True( ex.ToString().Contains( "Field Value: ''" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Row: '4'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Index: '0'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Value: ''" ) );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void FirstColumnErrorTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -123,15 +128,15 @@ namespace CsvHelper.Tests
 				}
 				catch( CsvReaderException ex )
 				{
-					Assert.True( ex.ToString().Contains( "Row: '3'" ) );
-					Assert.True( ex.ToString().Contains( "Field Index: '0'" ) );
-					Assert.True( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
-					Assert.True( ex.ToString().Contains( "Field Value: 'one'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Row: '3'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Index: '0'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Value: 'one'" ) );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void SecondColumnEmptyErrorTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -152,15 +157,15 @@ namespace CsvHelper.Tests
 				}
 				catch( CsvReaderException ex )
 				{
-					Assert.True( ex.ToString().Contains( "Row: '2'" ) );
-					Assert.True( ex.ToString().Contains( "Field Index: '1'" ) );
-					Assert.True( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
-					Assert.True( ex.ToString().Contains( "Field Value: ''" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Row: '2'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Index: '1'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Name: 'IntColumn'" ) );
+					Assert.IsTrue( ex.ToString().Contains( "Field Value: ''" ) );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void Test()
 		{
 			using( var stream = new MemoryStream() )

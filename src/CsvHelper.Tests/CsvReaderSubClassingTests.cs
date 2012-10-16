@@ -1,14 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration;
-using Moq;
-using Xunit;
+using CsvHelper.Tests.Mocks;
+#if WINRT_4_5
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace CsvHelper.Tests
 {
+	[TestClass]
 	public class CsvReaderSubClassingTests
 	{
-		[Fact]
+		[TestMethod]
 		public void GetRecordTest()
 		{
 			var data = new List<string[]>
@@ -19,16 +24,9 @@ namespace CsvHelper.Tests
 				null
 			};
 
-			var parserMock = new Mock<ICsvParser>();
-			parserMock.Setup( m => m.Configuration ).Returns( new CsvConfiguration() );
-			var count = -1;
-			parserMock.Setup( m => m.Read() ).Returns( () =>
-			{
-				count++;
-				return data[count];
-			} );
+			var parserMock = new ParserMock( new Queue<string[]>( data ) );
 
-			var csvReader = new MyCsvReader( parserMock.Object );
+			var csvReader = new MyCsvReader( parserMock );
 			csvReader.GetRecords<Test>().ToList();
 		}
 

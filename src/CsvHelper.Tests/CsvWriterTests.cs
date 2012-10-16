@@ -6,17 +6,22 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Globalization;
 using System.IO;
-using System.Text;
 using CsvHelper.Configuration;
-using Xunit;
+using CsvHelper.TypeConversion;
+#if WINRT_4_5
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace CsvHelper.Tests
 {
+	[TestClass]
 	public class CsvWriterTests
 	{
-		[Fact]
+		[TestMethod]
 		public void WriteFieldTest()
 		{
 			var stream = new MemoryStream();
@@ -43,10 +48,10 @@ namespace CsvHelper.Tests
 			stream.Position = 0;
 			var data = reader.ReadToEnd();
 
-			Assert.Equal( "one,\"one, two\",\"one \"\"two\"\" three\",\" one \"," + date + ",1,1,1,1,1," + guid + "\r\n", data );
+			Assert.AreEqual( "one,\"one, two\",\"one \"\"two\"\" three\",\" one \"," + date + ",1,1,1,1,1," + guid + "\r\n", data );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordTest()
 		{
 			var record = new TestRecord
@@ -69,10 +74,10 @@ namespace CsvHelper.Tests
 			var expected = "FirstColumn,Int Column,StringColumn,TypeConvertedColumn\r\n";
 			expected += "first column,1,string column,test\r\n";
 
-			Assert.Equal( expected, csvFile );
+			Assert.AreEqual( expected, csvFile );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordNoIndexesTest()
 		{
 			var record = new TestRecordNoIndexes
@@ -95,10 +100,10 @@ namespace CsvHelper.Tests
 			var expected = "Int Column,StringColumn,FirstColumn,TypeConvertedColumn\r\n";
 			expected += "1,string column,first column,test\r\n";
 
-			Assert.Equal( expected, csvFile );
+			Assert.AreEqual( expected, csvFile );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordsTest()
 		{
 			var records = new List<TestRecord>
@@ -132,10 +137,10 @@ namespace CsvHelper.Tests
 			expected += "first column,1,string column,test\r\n";
 			expected += "first column 2,2,string column 2,test\r\n";
 
-			Assert.Equal( expected, csvFile );
+			Assert.AreEqual( expected, csvFile );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordNoHeaderTest()
 		{
 			var stream = new MemoryStream();
@@ -147,10 +152,10 @@ namespace CsvHelper.Tests
 			var reader = new StreamReader( stream );
 			var csvFile = reader.ReadToEnd();
 
-			Assert.Equal( ",0,,test\r\n", csvFile );
+			Assert.AreEqual( ",0,,test\r\n", csvFile );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordWithNullRecordTest()
 		{
 			var record = new TestRecord
@@ -177,10 +182,10 @@ namespace CsvHelper.Tests
 			expected += ",,,\r\n";
 			expected += "first column,1,string column,test\r\n";
 
-			Assert.Equal( expected, csvFile );
+			Assert.AreEqual( expected, csvFile );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordWithReferencesTest()
 		{
 			var record = new Person
@@ -217,11 +222,11 @@ namespace CsvHelper.Tests
 			var expected = "FirstName,LastName,HomeStreet,HomeCity,HomeState,HomeZip,WorkStreet,WorkCity,WorkState,WorkZip\r\n" +
 			               "First Name,Last Name,Home Street,Home City,Home State,Home Zip,Work Street,Work City,Work State,Work Zip\r\n";
 
-			Assert.Equal( expected, csvFile );
+			Assert.AreEqual( expected, csvFile );
 
 		}
 
-		[Fact]
+		[TestMethod]
 		public void InvalidateRecordsCacheTest()
 		{
 			var people = new List<Person>
@@ -251,11 +256,11 @@ namespace CsvHelper.Tests
 				expectedText += "first name,,,\r\n";
 				expectedText += ",city,,\r\n";
 
-				Assert.Equal( expectedText, csvText );
+				Assert.AreEqual( expectedText, csvText );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void WriteRecordsAllFieldsQuotedTest()
 		{
 			var record = new TestRecord
@@ -284,17 +289,16 @@ namespace CsvHelper.Tests
 			var expected = "\"FirstColumn\",\"Int Column\",\"StringColumn\",\"TypeConvertedColumn\"\r\n";
 			expected += "\"first column\",\"1\",\"string column\",\"test\"\r\n";
 
-			Assert.Equal( expected, csv );
+			Assert.AreEqual( expected, csv );
 		}
 
-		[TypeConverter( "type name" )]
 		private class TestRecord
 		{
 			[CsvField( Index = 1, Name = "Int Column" )]
 			[TypeConverter( typeof( Int32Converter ) )]
 			public int IntColumn { get; set; }
 
-			[TypeConverter( "String" )]
+			[TypeConverter( typeof( string ) )]
 			public string StringColumn { get; set; }
 
 			[CsvField( Ignore = true )]
@@ -313,7 +317,7 @@ namespace CsvHelper.Tests
 			[TypeConverter( typeof( Int32Converter ) )]
 			public int IntColumn { get; set; }
 
-			[TypeConverter( "String" )]
+			[TypeConverter( typeof( string ) )]
 			public string StringColumn { get; set; }
 
 			[CsvField( Ignore = true )]
@@ -326,11 +330,26 @@ namespace CsvHelper.Tests
 			public string TypeConvertedColumn { get; set; }
 		}
 
-		private class TestTypeConverter : TypeConverter
+		private class TestTypeConverter : ITypeConverter
 		{
-			public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType )
+			public string ConvertToString( object value )
 			{
 				return "test";
+			}
+
+			string ITypeConverter.ConvertToString( CultureInfo culture, object value )
+			{
+				throw new NotImplementedException();
+			}
+
+			public object ConvertFromString( string text )
+			{
+				throw new NotImplementedException();
+			}
+
+			public object ConvertFromString( CultureInfo culture, string text )
+			{
+				throw new NotImplementedException();
 			}
 		}
 

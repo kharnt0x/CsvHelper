@@ -102,7 +102,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Folder Include="MissingFromRt45\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CsvHelper\Configuration\CsvClassMap.cs">
@@ -237,6 +236,7 @@
     <Compile Include="..\CsvHelper\TypeConversion\UInt64Converter.cs">
       <Link>TypeConversion\UInt64Converter.cs</Link>
     </Compile>
+    <Compile Include="MissingFromRt45\ReflectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

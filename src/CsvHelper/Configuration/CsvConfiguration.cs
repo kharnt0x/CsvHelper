@@ -10,6 +10,9 @@ using System.Linq.Expressions;
 #endif
 using System.Reflection;
 using System.Text;
+#if WINRT_4_5
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper.Configuration
 {
@@ -324,11 +327,7 @@ namespace CsvHelper.Configuration
 		/// <param name="type">The type of custom class that contains the attributes.</param>
 		public virtual void AttributeMapping( Type type )
 		{
-#if WINRT_4_5
-			var props = type.GetRuntimeProperties();
-#else
-			var props = type.GetProperties( PropertyBindingFlags );
-#endif
+			var props = type.GetProperties();
 
 			foreach( var property in props )
 			{
@@ -372,11 +371,7 @@ namespace CsvHelper.Configuration
 					// This is a reference mapping.
 					var refMap = ReferenceMap( property );
 					references.Add( refMap );
-#if WINRT_4_5
-					var refProps = property.PropertyType.GetRuntimeProperties();
-#else
-					var refProps = property.PropertyType.GetProperties( PropertyBindingFlags );
-#endif
+					var refProps = property.PropertyType.GetProperties();
 					foreach( var refProp in refProps )
 					{
 						var refCsvFieldAttributes = ReflectionHelper.GetAttributes<CsvFieldAttribute>( refProp, true );

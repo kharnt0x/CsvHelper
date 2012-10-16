@@ -6,13 +6,18 @@
 #endregion
 using System.IO;
 using System.Text;
-using Xunit;
+#if WINRT_4_5
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
 namespace CsvHelper.Tests
 {
+	[TestClass]
 	public class CsvParserTests
 	{
-		[Fact]
+		[TestMethod]
 		public void ReadNewRecordTest()
 		{
 			var stream = new MemoryStream();
@@ -31,10 +36,10 @@ namespace CsvHelper.Tests
 				count++;
 			}
 
-			Assert.Equal( 2, count );
+			Assert.AreEqual( 2, count );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ReadEmptyRowsTest()
 		{
 			var stream = new MemoryStream();
@@ -57,10 +62,10 @@ namespace CsvHelper.Tests
 				count++;
 			}
 
-			Assert.Equal( 4, count );
+			Assert.AreEqual( 4, count );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ReadTest()
 		{
 			var stream = new MemoryStream();
@@ -74,20 +79,20 @@ namespace CsvHelper.Tests
 			var parser = new CsvParser( reader );
 
 			var record = parser.Read();
-			Assert.Equal( "one", record[0] );
-			Assert.Equal( "two", record[1] );
-			Assert.Equal( "three", record[2] );
+			Assert.AreEqual( "one", record[0] );
+			Assert.AreEqual( "two", record[1] );
+			Assert.AreEqual( "three", record[2] );
 
 			record = parser.Read();
-			Assert.Equal( "four", record[0] );
-			Assert.Equal( "five", record[1] );
-			Assert.Equal( "six", record[2] );
+			Assert.AreEqual( "four", record[0] );
+			Assert.AreEqual( "five", record[1] );
+			Assert.AreEqual( "six", record[2] );
 
 			record = parser.Read();
-			Assert.Null( record );
+			Assert.IsNull( record );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ReadFieldQuotesTest()
 		{
 			var stream = new MemoryStream();
@@ -101,20 +106,20 @@ namespace CsvHelper.Tests
 			var parser = new CsvParser( reader ) { Configuration = { BufferSize = 2000 } };
 
 			var record = parser.Read();
-			Assert.Equal( "one", record[0] );
-			Assert.Equal( "two", record[1] );
-			Assert.Equal( "three", record[2] );
+			Assert.AreEqual( "one", record[0] );
+			Assert.AreEqual( "two", record[1] );
+			Assert.AreEqual( "three", record[2] );
 
 			record = parser.Read();
-			Assert.Equal( "four", record[0] );
-			Assert.Equal( "\"five\"", record[1] );
-			Assert.Equal( "six", record[2] );
+			Assert.AreEqual( "four", record[0] );
+			Assert.AreEqual( "\"five\"", record[1] );
+			Assert.AreEqual( "six", record[2] );
 
 			record = parser.Read();
-			Assert.Null( record );
+			Assert.IsNull( record );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ReadSpacesTest()
 		{
 			var stream = new MemoryStream();
@@ -128,18 +133,18 @@ namespace CsvHelper.Tests
 			var parser = new CsvParser( reader ) { Configuration = { BufferSize = 2 } };
 
 			var record = parser.Read();
-			Assert.Equal( " one ", record[0] );
-			Assert.Equal( " two three ", record[1] );
-			Assert.Equal( " four ", record[2] );
+			Assert.AreEqual( " one ", record[0] );
+			Assert.AreEqual( " two three ", record[1] );
+			Assert.AreEqual( " four ", record[2] );
 
 			record = parser.Read();
-			Assert.Equal( "  five \" six \" seven  ", record[0] );
+			Assert.AreEqual( "  five \" six \" seven  ", record[0] );
 
 			record = parser.Read();
-			Assert.Null( record );
+			Assert.IsNull( record );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void CallingReadMultipleTimesAfterDoneReadingTest()
 		{
 			var stream = new MemoryStream();
@@ -158,7 +163,7 @@ namespace CsvHelper.Tests
 			parser.Read();
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseEmptyTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -166,11 +171,11 @@ namespace CsvHelper.Tests
 			using( var parser = new CsvParser( streamReader ) )
 			{
 				var record = parser.Read();
-				Assert.Null( record );
+				Assert.IsNull( record );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseCrOnlyTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -183,11 +188,11 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				var record = parser.Read();
-				Assert.Null( record );
+				Assert.IsNull( record );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseLfOnlyTest()
 		{
 			using (var stream = new MemoryStream())
@@ -200,11 +205,11 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				var record = parser.Read();
-				Assert.Null(record);
+				Assert.IsNull(record);
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseCrLnOnlyTest()
 		{
 			using (var stream = new MemoryStream())
@@ -217,11 +222,11 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				var record = parser.Read();
-				Assert.Null(record);
+				Assert.IsNull(record);
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void Parse1RecordWithNoCrlfTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -234,15 +239,15 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 3, record.Length );
-				Assert.Equal( "one", record[0] );
-				Assert.Equal( "two", record[1] );
-				Assert.Equal( "three", record[2] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 3, record.Length );
+				Assert.AreEqual( "one", record[0] );
+				Assert.AreEqual( "two", record[1] );
+				Assert.AreEqual( "three", record[2] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void Parse2RecordsLastWithNoCrlfTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -257,15 +262,15 @@ namespace CsvHelper.Tests
 
 				parser.Read();
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 3, record.Length );
-				Assert.Equal( "four", record[0] );
-				Assert.Equal( "five", record[1] );
-				Assert.Equal( "six", record[2] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 3, record.Length );
+				Assert.AreEqual( "four", record[0] );
+				Assert.AreEqual( "five", record[1] );
+				Assert.AreEqual( "six", record[2] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseFirstFieldIsEmptyQuotedTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -278,15 +283,15 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 3, record.Length );
-				Assert.Equal( "", record[0] );
-				Assert.Equal( "two", record[1] );
-				Assert.Equal( "three", record[2] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 3, record.Length );
+				Assert.AreEqual( "", record[0] );
+				Assert.AreEqual( "two", record[1] );
+				Assert.AreEqual( "three", record[2] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseLastFieldIsEmptyQuotedTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -299,15 +304,15 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 3, record.Length );
-				Assert.Equal( "one", record[0] );
-				Assert.Equal( "two", record[1] );
-				Assert.Equal( "", record[2] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 3, record.Length );
+				Assert.AreEqual( "one", record[0] );
+				Assert.AreEqual( "two", record[1] );
+				Assert.AreEqual( "", record[2] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseQuoteOnlyQuotedFieldTest()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -320,15 +325,15 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 3, record.Length );
-				Assert.Equal( "\"", record[0] );
-				Assert.Equal( "two", record[1] );
-				Assert.Equal( "three", record[2] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 3, record.Length );
+				Assert.AreEqual( "\"", record[0] );
+				Assert.AreEqual( "two", record[1] );
+				Assert.AreEqual( "three", record[2] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseRecordsWithOnlyOneField()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -343,23 +348,23 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 1, record.Length );
-				Assert.Equal( "row one", record[0] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 1, record.Length );
+				Assert.AreEqual( "row one", record[0] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 1, record.Length );
-				Assert.Equal( "row two", record[0] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 1, record.Length );
+				Assert.AreEqual( "row two", record[0] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 1, record.Length );
-				Assert.Equal( "row three", record[0] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 1, record.Length );
+				Assert.AreEqual( "row three", record[0] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseRecordWhereOnlyCarriageReturnLineEndingIsUsed()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -374,26 +379,26 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "one", record[0] );
-				Assert.Equal( "two", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "one", record[0] );
+				Assert.AreEqual( "two", record[1] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "three", record[0] );
-				Assert.Equal( "four", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "three", record[0] );
+				Assert.AreEqual( "four", record[1] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "five", record[0] );
-				Assert.Equal( "six", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "five", record[0] );
+				Assert.AreEqual( "six", record[1] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseRecordWhereOnlyLineFeedLineEndingIsUsed()
 		{
 			using( var memoryStream = new MemoryStream() )
@@ -408,26 +413,26 @@ namespace CsvHelper.Tests
 				memoryStream.Position = 0;
 
 				var record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "one", record[0] );
-				Assert.Equal( "two", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "one", record[0] );
+				Assert.AreEqual( "two", record[1] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "three", record[0] );
-				Assert.Equal( "four", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "three", record[0] );
+				Assert.AreEqual( "four", record[1] );
 
 				record = parser.Read();
-				Assert.NotNull( record );
-				Assert.Equal( 2, record.Length );
-				Assert.Equal( "five", record[0] );
-				Assert.Equal( "six", record[1] );
+				Assert.IsNotNull( record );
+				Assert.AreEqual( 2, record.Length );
+				Assert.AreEqual( "five", record[0] );
+				Assert.AreEqual( "six", record[1] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseCommentedOutLineWithCommentsOn()
 		{
 			var stream = new MemoryStream();
@@ -443,10 +448,10 @@ namespace CsvHelper.Tests
 
 			parser.Read();
 			var record = parser.Read();
-			Assert.Equal( "seven", record[0] );
+			Assert.AreEqual( "seven", record[0] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseCommentedOutLineWithCommentsOff()
 		{
 			var stream = new MemoryStream();
@@ -462,10 +467,10 @@ namespace CsvHelper.Tests
 
 			parser.Read();
 			var record = parser.Read();
-			Assert.Equal( "#four", record[0] );
+			Assert.AreEqual( "#four", record[0] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseCommentedOutLineWithDifferentCommentCommentsOn()
 		{
 			var stream = new MemoryStream();
@@ -481,10 +486,10 @@ namespace CsvHelper.Tests
 
 			parser.Read();
 			var record = parser.Read();
-			Assert.Equal( "seven", record[0] );
+			Assert.AreEqual( "seven", record[0] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseUsingDifferentDelimiter()
 		{
 			var stream = new MemoryStream();
@@ -497,12 +502,12 @@ namespace CsvHelper.Tests
 			var parser = new CsvParser( reader ) { Configuration = { Delimiter = '\t' } };
 
 			var record = parser.Read();
-			Assert.Equal( "one", record[0] );
-			Assert.Equal( "two", record[1] );
-			Assert.Equal( "three", record[2] );
+			Assert.AreEqual( "one", record[0] );
+			Assert.AreEqual( "two", record[1] );
+			Assert.AreEqual( "three", record[2] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ParseUsingDifferentQuote()
 		{
 			var stream = new MemoryStream();
@@ -515,12 +520,12 @@ namespace CsvHelper.Tests
 			var parser = new CsvParser( reader ) { Configuration = { Quote = '\'' } };
 
 			var record = parser.Read();
-			Assert.Equal( "one", record[0] );
-			Assert.Equal( "two", record[1] );
-			Assert.Equal( "three", record[2] );
+			Assert.AreEqual( "one", record[0] );
+			Assert.AreEqual( "two", record[1] );
+			Assert.AreEqual( "three", record[2] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ReadFinalRecordWithNoEndOfLineTest()
 		{
 			var stream = new MemoryStream();
@@ -535,16 +540,16 @@ namespace CsvHelper.Tests
 
 			var record = parser.Read();
 
-			Assert.NotNull( record );
-			Assert.Equal( "", record[3] );
+			Assert.IsNotNull( record );
+			Assert.AreEqual( "", record[3] );
 
 			record = parser.Read();
 
-			Assert.NotNull( record );
-			Assert.Equal( "", record[3] );
+			Assert.IsNotNull( record );
+			Assert.AreEqual( "", record[3] );
 		}
 
-		[Fact]
+		[TestMethod]
 		public void CharReadTotalTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -584,26 +589,26 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.Equal( 8, parser.CharPosition );
+				Assert.AreEqual( 8, parser.CharPosition );
 
 				parser.Read();
-				Assert.Equal( 15, parser.CharPosition );
+				Assert.AreEqual( 15, parser.CharPosition );
 
 				parser.Read();
-				Assert.Equal( 18, parser.CharPosition );
+				Assert.AreEqual( 18, parser.CharPosition );
 
 				parser.Read();
-				Assert.Equal( 39, parser.CharPosition );
+				Assert.AreEqual( 39, parser.CharPosition );
 
 				parser.Read();
-				Assert.Equal( 56, parser.CharPosition );
+				Assert.AreEqual( 56, parser.CharPosition );
 
 				parser.Read();
-				Assert.Equal( 57, parser.CharPosition );
+				Assert.AreEqual( 57, parser.CharPosition );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void StreamSeekingUsingCharPositionTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -643,36 +648,36 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				var record = parser.Read();
-				Assert.Equal( "Id", record[0] );
-				Assert.Equal( "Name", record[1] );
+				Assert.AreEqual( "Id", record[0] );
+				Assert.AreEqual( "Name", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.CharPosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "1", record[0] );
-				Assert.Equal( "one", record[1] );
+				Assert.AreEqual( "1", record[0] );
+				Assert.AreEqual( "one", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.CharPosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "", record[0] );
-				Assert.Equal( "", record[1] );
+				Assert.AreEqual( "", record[0] );
+				Assert.AreEqual( "", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.CharPosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "2", record[0] );
-				Assert.Equal( "two", record[1] );
+				Assert.AreEqual( "2", record[0] );
+				Assert.AreEqual( "two", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.CharPosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "3", record[0] );
-				Assert.Equal( "three, four", record[1] );
+				Assert.AreEqual( "3", record[0] );
+				Assert.AreEqual( "three, four", record[1] );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void RowTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -689,12 +694,12 @@ namespace CsvHelper.Tests
 				while( parser.Read() != null )
 				{
 					rowCount++;
-					Assert.Equal( rowCount, parser.Row );
+					Assert.AreEqual( rowCount, parser.Row );
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void RowBlankLinesTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -713,13 +718,13 @@ namespace CsvHelper.Tests
 				var rowCount = 1;
 				while( parser.Read() != null )
 				{
-					Assert.Equal( rowCount, parser.Row );
+					Assert.AreEqual( rowCount, parser.Row );
 					rowCount += 2;
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void RowCommentLinesTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -739,13 +744,13 @@ namespace CsvHelper.Tests
 				var rowCount = 1;
 				while( parser.Read() != null )
 				{
-					Assert.Equal( rowCount, parser.Row );
+					Assert.AreEqual( rowCount, parser.Row );
 					rowCount += 2;
 				}
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ByteCountTest()
 		{
 			using( var stream = new MemoryStream() )
@@ -760,17 +765,17 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.Equal( 4, parser.BytePosition );
+				Assert.AreEqual( 4, parser.BytePosition );
 
 				parser.Read();
-				Assert.Equal( 9, parser.BytePosition );
+				Assert.AreEqual( 9, parser.BytePosition );
 
 				parser.Read();
-				Assert.Equal( 10, parser.BytePosition );
+				Assert.AreEqual( 10, parser.BytePosition );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void ByteCountUsingCharWithMoreThanSingleByteTest()
 		{
 			var encoding = Encoding.Unicode;
@@ -789,20 +794,20 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.Equal( 8, parser.BytePosition );
+				Assert.AreEqual( 8, parser.BytePosition );
 
 				parser.Read();
-				Assert.Equal( 18, parser.BytePosition );
+				Assert.AreEqual( 18, parser.BytePosition );
 
 				parser.Read();
-				Assert.Equal( 28, parser.BytePosition );
+				Assert.AreEqual( 28, parser.BytePosition );
 
 				parser.Read();
-				Assert.Equal( 30, parser.BytePosition );
+				Assert.AreEqual( 30, parser.BytePosition );
 			}
 		}
 
-		[Fact]
+		[TestMethod]
 		public void StreamSeekingUsingByteCountTest()
 		{
 			var encoding = Encoding.Unicode;
@@ -845,32 +850,32 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				var record = parser.Read();
-				Assert.Equal( "Id", record[0] );
-				Assert.Equal( "Name", record[1] );
+				Assert.AreEqual( "Id", record[0] );
+				Assert.AreEqual( "Name", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.BytePosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "1", record[0] );
-				Assert.Equal( "one", record[1] );
+				Assert.AreEqual( "1", record[0] );
+				Assert.AreEqual( "one", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.BytePosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "", record[0] );
-				Assert.Equal( "", record[1] );
+				Assert.AreEqual( "", record[0] );
+				Assert.AreEqual( "", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.BytePosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "2", record[0] );
-				Assert.Equal( "two", record[1] );
+				Assert.AreEqual( "2", record[0] );
+				Assert.AreEqual( "two", record[1] );
 
 				stream.Position = 0;
 				stream.Seek( parser.BytePosition, SeekOrigin.Begin );
 				record = parser.Read();
-				Assert.Equal( "3", record[0] );
-				Assert.Equal( "three, four", record[1] );
+				Assert.AreEqual( "3", record[0] );
+				Assert.AreEqual( "three, four", record[1] );
 			}
 		}
 	}

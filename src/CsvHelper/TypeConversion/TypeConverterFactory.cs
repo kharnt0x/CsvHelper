@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Reflection;
+#if WINRT_4_5
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper.TypeConversion
 {
@@ -59,10 +63,6 @@ namespace CsvHelper.TypeConversion
 			{
 				return new Int64Converter();
 			}
-			if( type == typeof( Nullable<> ) )
-			{
-				return new NullableConverter( Nullable.GetUnderlyingType( type ) );
-			}
 			if( type == typeof( sbyte ) )
 			{
 				return new SByteConverter();
@@ -82,6 +82,16 @@ namespace CsvHelper.TypeConversion
 			if( type == typeof( ulong ) )
 			{
 				return new UInt64Converter();
+			}
+
+#if WINRT_4_5
+			var isGenericType = type.GetTypeInfo().IsGenericType;
+#else
+			var isGenericType = type.IsGenericType;
+#endif
+			if( isGenericType && type.GetGenericTypeDefinition() == typeof( System.Nullable<> ) )
+			{
+				return new NullableConverter( type );
 			}
 
 			return new DefaultTypeConverter();

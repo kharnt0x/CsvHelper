@@ -17,6 +17,9 @@ using System.Linq.Expressions;
 #if NET_2_0
 using CsvHelper.MissingFrom20;
 #endif
+#if WINRT_4_5
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper
 {
@@ -979,11 +982,7 @@ namespace CsvHelper
 				var referenceBody = Expression.MemberInit( Expression.New( referenceMap.Property.PropertyType ), referenceBindings );
 				var referenceFunc = Expression.Lambda( referenceBody, referenceReaderParameter );
 				var referenceCompiled = referenceFunc.Compile();
-#if WINRT_4_5
-				var referenceCompiledMethod = referenceCompiled.GetType().GetRuntimeMethod( "Invoke", null );
-#else
 				var referenceCompiledMethod = referenceCompiled.GetType().GetMethod( "Invoke" );
-#endif
 				Expression referenceObjectExpression = Expression.Call( Expression.Constant( referenceCompiled ), referenceCompiledMethod, Expression.Constant( this ) );
 				bindings.Add( Expression.Bind( referenceMap.Property, referenceObjectExpression ) );
 			}
@@ -1059,11 +1058,7 @@ namespace CsvHelper
 				}
 
 				// Get the field using the field index.
-#if WINRT_4_5
-				var method = typeof( ICsvReader ).GetRuntimeProperty( "Item" ).GetMethod;
-#else
 				var method = typeof( ICsvReader ).GetProperty( "Item", new[] { typeof( int ) } ).GetGetMethod();
-#endif
 				Expression fieldExpression = Expression.Call( readerParameter, method, Expression.Constant( index, typeof( int ) ) );
 
 				// Convert the field.

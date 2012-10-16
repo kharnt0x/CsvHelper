@@ -20,7 +20,7 @@ namespace CsvHelper.TypeConversion
 				return string.Empty;
 			}
 
-			return base.ConvertFromString( text );
+			return text;
 		}
 	}
 }

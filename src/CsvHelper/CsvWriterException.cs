@@ -3,6 +3,9 @@
 // See LICENSE.txt for details or visit http://www.opensource.org/licenses/ms-pl.html
 // http://csvhelper.com
 using System;
+#if !WINRT_4_5
+using System.Runtime.Serialization;
+#endif
 
 namespace CsvHelper
 {

@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{00F5DE74-0428-467A-94E7-40E7645F8845}</ProjectGuid>
+    <ProjectGuid>{1545FE0B-1A6C-431B-8014-0EB3BF501E1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CsvHelperRt45.Tests</RootNamespace>
@@ -14,6 +14,7 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>CsvHelperRt45.Tests_TemporaryKey.pfx</PackageCertificateKeyFile>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -81,7 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINRT_4_5</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -100,18 +101,94 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <AppXPackage>True</AppXPackage>
+    <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
+  </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <!--A reference to the entire .Net Framework and Windows SDK are automatically included-->
+    <SDKReference Include="MSTestFramework, Version=11.0" />
+    <SDKReference Include="TestPlatform, Version=11.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CsvHelper.Tests\CsvClassMappingTests.cs">
+      <Link>CsvClassMappingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvConfigurationTests.cs">
+      <Link>CsvConfigurationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvFieldAttributeMappingTests.cs">
+      <Link>CsvFieldAttributeMappingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvParserConstructorTests.cs">
+      <Link>CsvParserConstructorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvParserTests.cs">
+      <Link>CsvParserTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvReaderConstructorTests.cs">
+      <Link>CsvReaderConstructorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvReaderErrorMessageTests.cs">
+      <Link>CsvReaderErrorMessageTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvReaderMappingTests.cs">
+      <Link>CsvReaderMappingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvReaderSubClassingTests.cs">
+      <Link>CsvReaderSubClassingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvReaderTests.cs">
+      <Link>CsvReaderTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvWriterConstructorTests.cs">
+      <Link>CsvWriterConstructorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvWriterMappingTests.cs">
+      <Link>CsvWriterMappingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvWriterSubClassingTests.cs">
+      <Link>CsvWriterSubClassingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\CsvWriterTests.cs">
+      <Link>CsvWriterTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\Mocks\ParserMock.cs">
+      <Link>Mocks\ParserMock.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\ReferenceMappingAttributeTests.cs">
+      <Link>ReferenceMappingAttributeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\CsvHelper.Tests\ReferenceMappingClassMapTests.cs">
+      <Link>ReferenceMappingClassMapTests.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <None Include="CsvHelperRt45.Tests_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\UnitTestLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\UnitTestSmallLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\UnitTestSplashScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\UnitTestStoreLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CsvHelperRt45\CsvHelperRt45.csproj">
       <Project>{94f068ba-019d-4d70-9967-28387aba6f29}</Project>
       <Name>CsvHelperRt45</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\CsvHelper.Tests\CsvParserTests.cs">
-      <Link>CsvParserTests.cs</Link>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
@@ -121,7 +198,7 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
+  </Target>  
   <Target Name="AfterBuild">
   </Target>
   -->

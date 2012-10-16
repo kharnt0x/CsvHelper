@@ -17,6 +17,9 @@ using CsvHelper.TypeConversion;
 #if NET_2_0
 using CsvHelper.MissingFrom20;
 #endif
+#if WINRT_4_5
+using CsvHelper.MissingFromRt45;
+#endif
 
 namespace CsvHelper
 {
@@ -579,11 +582,7 @@ namespace CsvHelper
 				Expression fieldExpression = Expression.Property( currentRecordObject, propertyMap.PropertyValue );
 				var typeConverterExpression = Expression.Constant( propertyMap.TypeConverterValue );
 				var convertMethod = Configuration.UseInvariantCulture ? "ConvertToInvariantString" : "ConvertToString";
-#if WINRT_4_5
-				var method = propertyMap.TypeConverterValue.GetType().GetRuntimeMethod( convertMethod, new[] { typeof( object ) } );
-#else
 				var method = propertyMap.TypeConverterValue.GetType().GetMethod( convertMethod, new[] { typeof( object ) } );
-#endif
 				fieldExpression = Expression.Convert( fieldExpression, typeof( object ) );
 				fieldExpression = Expression.Call( typeConverterExpression, method, fieldExpression );
 
