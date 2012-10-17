@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace CsvHelper.TypeConversion
 {
@@ -36,5 +37,23 @@ namespace CsvHelper.TypeConversion
 		/// <param name="text">The string to convert to an object.</param>
 		/// <returns>The object created from the string.</returns>
 		object ConvertFromString( CultureInfo culture, string text );
+
+		/// <summary>
+		/// Determines whether this instance [can convert from] the specified type.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns>
+		///   <c>true</c> if this instance [can convert from] the specified type; otherwise, <c>false</c>.
+		/// </returns>
+		bool CanConvertFrom( Type type );
+
+		/// <summary>
+		/// Determines whether this instance [can convert to] the specified type.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <returns>
+		///   <c>true</c> if this instance [can convert to] the specified type; otherwise, <c>false</c>.
+		/// </returns>
+		bool CanConvertTo( Type type );
 	}
 }

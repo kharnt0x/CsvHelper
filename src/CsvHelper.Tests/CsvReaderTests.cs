@@ -76,6 +76,8 @@ namespace CsvHelper.Tests
 			};
 			var queue = new Queue<string[]>();
 			queue.Enqueue( data );
+			queue.Enqueue( data );
+			queue.Enqueue( null );
 
 			var parserMock = new ParserMock( queue );
 
@@ -238,6 +240,7 @@ namespace CsvHelper.Tests
 		{
 			var data = new[] { "Field1", "Field1" };
 			var queue = new Queue<string[]>();
+			queue.Enqueue( data );
 			queue.Enqueue( data );
 			var parserMock = new ParserMock( queue );
 
@@ -523,6 +526,7 @@ namespace CsvHelper.Tests
 			var parserMock = new ParserMock( queue );
 
 			var reader = new CsvReader( parserMock );
+			reader.Configuration.HasHeaderRecord = false;
 			reader.Read();
 
 			DateTime field;
@@ -792,26 +796,16 @@ namespace CsvHelper.Tests
 			public string Column3 { get; set; }
 		}
 
-		private class TestTypeConverter : ITypeConverter
+		private class TestTypeConverter : DefaultTypeConverter
 		{
-			public string ConvertToString( object value )
-			{
-				return ConvertToString( CultureInfo.CurrentCulture, value );
-			}
-
-			public string ConvertToString( CultureInfo culture, object value )
+			public override object ConvertFromString( CultureInfo culture, string text )
 			{
 				return "test";
 			}
 
-			public object ConvertFromString( string text )
+			public override bool CanConvertFrom( Type type )
 			{
-				throw new NotImplementedException();
-			}
-
-			public object ConvertFromString( CultureInfo culture, string text )
-			{
-				throw new NotImplementedException();
+				return type == typeof( string );
 			}
 		}
 	}

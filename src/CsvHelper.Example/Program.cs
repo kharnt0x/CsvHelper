@@ -399,6 +399,16 @@ namespace CsvHelper.Example
 				};
 				return obj;
 			}
+
+			public bool CanConvertFrom( Type type )
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool CanConvertTo( Type type )
+			{
+				throw new NotImplementedException();
+			}
 		}
 
 		public class CustomObject

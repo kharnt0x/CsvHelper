@@ -34,7 +34,7 @@ namespace CsvHelper.Tests
 						"WorkState",
 						"WorkZip"
 			} );
-			queue.Enqueue( new[]
+			var row = new[]
 			{
 				"John",
 				"Doe",
@@ -46,7 +46,8 @@ namespace CsvHelper.Tests
 				"Work City",
 				"Work State",
 				"67890"
-			} );
+			};
+			queue.Enqueue( row );
 
 			var parserMock = new ParserMock( queue );
 
@@ -54,16 +55,16 @@ namespace CsvHelper.Tests
 			reader.Read();
 			var person = reader.GetRecord<Person>();
 
-			Assert.AreEqual( "FirstName", person.FirstName );
-			Assert.AreEqual( "LastName", person.LastName );
-			Assert.AreEqual( "HomeStreet", person.HomeAddress.Street );
-			Assert.AreEqual( "HomeCity", person.HomeAddress.City );
-			Assert.AreEqual( "HomeState", person.HomeAddress.State );
-			Assert.AreEqual( "HomeZip", person.HomeAddress.Zip );
-			Assert.AreEqual( "WorkStreet", person.WorkAddress.Street );
-			Assert.AreEqual( "WorkCity", person.WorkAddress.City );
-			Assert.AreEqual( "WorkState", person.WorkAddress.State );
-			Assert.AreEqual( "WorkZip", person.WorkAddress.Zip );
+			Assert.AreEqual( row[0], person.FirstName );
+			Assert.AreEqual( row[1], person.LastName );
+			Assert.AreEqual( row[2], person.HomeAddress.Street );
+			Assert.AreEqual( row[3], person.HomeAddress.City );
+			Assert.AreEqual( row[4], person.HomeAddress.State );
+			Assert.AreEqual( row[5], person.HomeAddress.Zip );
+			Assert.AreEqual( row[6], person.WorkAddress.Street );
+			Assert.AreEqual( row[7], person.WorkAddress.City );
+			Assert.AreEqual( row[8], person.WorkAddress.State );
+			Assert.AreEqual( row[9], person.WorkAddress.Zip );
 		}
 
 		private class Person

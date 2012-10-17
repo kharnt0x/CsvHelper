@@ -64,6 +64,17 @@ namespace CsvHelper.MissingFromRt45
 		}
 
 		/// <summary>
+		/// Determines whether an instance of the current <see cref="Type"/> can be assigned from an instance of the specified Type.
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <param name="c">The Type to compare with the current Type.</param>
+		/// <returns>true if c and the current Type represent the same type, or if the current Type is in the inheritance hierarchy of c, or if the current Type is an interface that c implements, or if c is a generic type parameter and the current Type represents one of the constraints of c. false if none of these conditions are true, or if c is null.</returns>
+		public static bool IsAssignableFrom( this Type type, Type c )
+		{
+			return type.GetTypeInfo().IsAssignableFrom( c.GetTypeInfo() );
+		}
+
+		/// <summary>
 		/// Returns the public get accessor for this property.
 		/// </summary>
 		/// <param name="property">The property.</param>

@@ -35,7 +35,7 @@ namespace CsvHelper.Tests.TypeConversion
 		{
 			var converter = TypeConverterFactory.CreateTypeConverter( typeof( DateTime ) );
 
-			Assert.IsType<DateTimeConverterTests>( converter );
+			Assert.IsType<DateTimeConverter>( converter );
 		}
 
 		[Fact]
@@ -97,7 +97,7 @@ namespace CsvHelper.Tests.TypeConversion
 		[Fact]
 		public void GetConverterForNullable()
 		{
-			var converter = TypeConverterFactory.CreateTypeConverter( typeof( Nullable<> ) );
+			var converter = TypeConverterFactory.CreateTypeConverter( typeof( int? ) );
 
 			Assert.IsType<NullableConverter>( converter );
 		}

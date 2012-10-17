@@ -298,7 +298,6 @@ namespace CsvHelper.Tests
 			[TypeConverter( typeof( Int32Converter ) )]
 			public int IntColumn { get; set; }
 
-			[TypeConverter( typeof( string ) )]
 			public string StringColumn { get; set; }
 
 			[CsvField( Ignore = true )]
@@ -317,7 +316,6 @@ namespace CsvHelper.Tests
 			[TypeConverter( typeof( Int32Converter ) )]
 			public int IntColumn { get; set; }
 
-			[TypeConverter( typeof( string ) )]
 			public string StringColumn { get; set; }
 
 			[CsvField( Ignore = true )]
@@ -348,6 +346,16 @@ namespace CsvHelper.Tests
 			}
 
 			public object ConvertFromString( CultureInfo culture, string text )
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool CanConvertFrom( Type type )
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool CanConvertTo( Type type )
 			{
 				throw new NotImplementedException();
 			}

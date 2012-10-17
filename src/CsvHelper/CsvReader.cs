@@ -1044,7 +1044,7 @@ namespace CsvHelper
 					continue;
 				}
 
-				if( propertyMap.TypeConverterValue == null )
+				if( propertyMap.TypeConverterValue == null || !propertyMap.TypeConverterValue.CanConvertFrom( typeof( string ) ) )
 				{
 					// Skip if the type isn't convertible.
 					continue;
